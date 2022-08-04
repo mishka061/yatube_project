@@ -1,0 +1,13 @@
+.logo img {
+    width: 34px;
+    height: 34px;
+}
+
+.navbar-brand {
+    color: red;
+    margin-left: 8px;
+}
+
+.navbar {
+    background: lightblue !important;
+}

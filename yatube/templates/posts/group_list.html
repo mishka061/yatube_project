@@ -1,0 +1,30 @@
+<!-- повторяющиеся части шаблонов приложения -->
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+{% endblock %}
+{% block title %}
+{% endblock %}
+
+<html lang="ru">
+  <head>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+  <header>
+    {% include 'includes/header.html' %}
+  </header>
+  <main>
+    {% block content%}
+      <div class="container py-5">
+        <h1>
+          Информация о постах взята с сайта https://pikabu.ru/story/100_interesnyikh_faktov_o_zhivotnyikh_7406889
+        </h1>
+      </div>
+    {% endblock %}
+  </main>
+  <footer>
+    {% include 'includes/footer.html' %}
+  </footer>
+  </body>
+</html>

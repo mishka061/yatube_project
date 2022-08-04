@@ -1,12 +1,11 @@
-#from django.contrib import admin
-from django.urls import path, include
-from . import views
-#from posts.views import *
+from django.urls import path
+from  . import views
 
+
+app_name = 'posts'
 urlpatterns = [
-    path('', views.index),
-    path('posts/', views.group_posts),
-    #path('group/<slug:slug>/', views.group_posts),
-
-    #   path('admin/', admin.site.urls),
+    path('', views.index, name='index'),#главная страница
+    path('group/<slug:slug>/', views.group_posts, name='group_list'),
+    #страница со списком постов
 ]
+
