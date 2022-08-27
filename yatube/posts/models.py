@@ -14,10 +14,14 @@ class Group(models.Model):
 
 
 class Post(models.Model):
-    text = models.TextField(max_length=200, verbose_name='Текст поста')
+    text = models.TextField(
+        max_length=200,
+        verbose_name='Текст поста',
+        help_text='Введите текст поста'
+    )
     pub_date = models.DateTimeField(
         auto_now_add=True,
-        verbose_name='Дата поста'
+        verbose_name='Дата публикации'
     )
     author = models.ForeignKey(
         User,
@@ -31,7 +35,8 @@ class Post(models.Model):
         verbose_name='Группа поста',
         related_name='posts',
         blank=True,
-        null=True
+        null=True,
+        help_text='Группа, к которой будет относиться пост'
     )
 
     class Meta:
