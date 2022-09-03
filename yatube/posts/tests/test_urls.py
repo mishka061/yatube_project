@@ -1,59 +1,66 @@
+from http import HTTPStatus
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
+from django.urls import reverse
 from posts.models import Post, Group
 
 User = get_user_model()
 
+
 class PostURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
+
         super().setUpClass()
         cls.user = User.objects.create_user(username='author')
         cls.group = Group.objects.create(
             title='Тестовая группа',
-            slug='Тестовый слаг',
+            slug='test-slug',
             description='Тестовое описание',
         )
         cls.post = Post.objects.create(
             author=cls.user,
             text='Тестовый пост',
+            group=cls.group
         )
-    def setUp(self):
-        # Создаем неавторизованный клиент
-        self.guest_client = Client()
-        # Создаем пользователя
-        self.user = User.objects.create_user(username='HasNoName')
-        # Создаем второй клиент
-        self.authorized_client = Client()
-        # Авторизуем пользователя
-        self.authorized_client.force_login(self.user)
 
-
-    def guest_client(self):
-        templates_url_names = {
-            'posts/index.html': '/',
-            'posts/group_list.html': '/group/<slug>/',
-            'posts/profile.html': '/posts/post_id',
-            'posts/create_post.html': '/posts/post_id/edit',
-             'not found 404': '/unexisting_page/',
-
+        cls.templates_url_names = {
+            reverse('posts:index'): 'posts/index.html',
+            reverse('posts:group_list',
+                    kwargs={'slug': cls.group.slug}
+                    ): 'posts/group_list.html',
+            reverse('posts:profile',
+                    kwargs={'username': cls.user.username}
+                    ): 'posts/profile.html',
+            reverse('posts:post_detail',
+                    kwargs={'post_id': cls.post.pk}
+                    ): 'posts/post_detail.html',
+            reverse('posts:post_edit',
+                    kwargs={'post_id': cls.post.pk}
+                    ): 'posts/post_create.html',
+            reverse('posts:post_create'): 'posts/post_create.html'
         }
 
-        for template, address in templates_url_names.items():
+    def test_unexisting_page_location(self):
+        """Запрос к несуществующей странице вернёт ошибку 404"""
+        response = self.guest_client.get('/unexisting_page/')
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def setUp(self):
+        self.guest_client = Client()
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
+
+    def test_guest_client(self):
+        """Тесты доступности страниц для неавторизованного пользователя """
+        for address, template in self.templates_url_names.items():
             with self.subTest(address=address):
                 response = self.authorized_client.get(address)
                 self.assertTemplateUsed(response, template)
 
-    def authorized_client(self):
-        templates_url_names = {
-            'posts/index.html': '/',
-            'posts/group_list.html': '/group/<slug>/',
-            'posts/profile.html': '/posts/post_id',
-            'posts/create_post.html': '/create/',
-            'not found 404': '/unexisting_page/',
-        }
-
-        for template, address in templates_url_names.items():
+    def test_authorized_client(self):
+        """Тесты доступности страниц для авторизованного пользователя """
+        for address, template in self.templates_url_names.items():
             with self.subTest(address=address):
                 response = self.authorized_client.get(address)
                 self.assertTemplateUsed(response, template)

@@ -19,4 +19,3 @@ class StaticURLTests(TestCase):
         """Проверка шаблона для адреса /about/tech/."""
         response = self.guest_client.get('/about/tech/')
         self.assertTemplateUsed(response, 'about/tech.html')
-

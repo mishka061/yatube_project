@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class YatybiaConfig(AppConfig):
+class PostsConfig(AppConfig):
     name = 'posts'

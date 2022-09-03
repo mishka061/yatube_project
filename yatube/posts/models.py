@@ -5,15 +5,27 @@ User = get_user_model()
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=200, verbose_name='Название группы')
-    slug = models.SlugField(unique=True, verbose_name='Адрес группы')
-    description = models.TextField(verbose_name='Описание группы')
+    title = models.CharField(
+        max_length=200,
+        verbose_name='Название группы',
+        help_text='Выберите группу'
+    )
+    slug = models.SlugField(
+        unique=True,
+        verbose_name='Адрес группы',
+        help_text='Выберите адрес группы'
+    )
+    description = models.TextField(
+        verbose_name='Описание группы',
+        help_text='Выберите описание группы'
+    )
 
     def __str__(self):
         return self.title
 
 
 class Post(models.Model):
+    objects = None
     text = models.TextField(
         max_length=200,
         verbose_name='Текст поста',
@@ -36,7 +48,7 @@ class Post(models.Model):
         related_name='posts',
         blank=True,
         null=True,
-        help_text='Группа, к которой будет относиться пост'
+        help_text='Выберите группу'
     )
 
     class Meta:

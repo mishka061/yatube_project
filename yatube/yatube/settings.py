@@ -36,6 +36,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'about.apps.AboutConfig',
+    'posts.apps.PostsConfig',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
@@ -44,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'posts',
+
 ]
 
 MIDDLEWARE = [

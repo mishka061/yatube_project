@@ -5,5 +5,15 @@ from .models import Post
 class PostForm(ModelForm):
     class Meta:
         model = Post
-        fields = ('text', 'group')
-        labels = {'group': 'Группа', 'text': 'Текст'}
+        fields = {
+            'text': 'Текст подсказки',
+            'group': 'Группа'
+        }
+        labels = {
+            'group': 'Группа',
+            'text': 'Текст подсказки'
+        }
+
+
+class PostCreateForm:
+    pass
