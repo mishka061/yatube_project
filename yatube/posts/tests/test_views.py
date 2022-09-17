@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 from django import forms
@@ -57,6 +58,7 @@ class PostViewsTest(TestCase):
         """Проверка контекста index """
         response = self.authorized_client.get(reverse('posts:index'))
         self.check_post_info(response.context['page_obj'][0])
+        cache.clear()
 
     def check_post_info(self, post):
         """ Проверка текста на контекст"""
@@ -64,6 +66,7 @@ class PostViewsTest(TestCase):
             self.assertEqual(post.text, self.post.text)
             self.assertEqual(post.author, self.post.author)
             self.assertEqual(post.group.id, self.post.group.id)
+            cache.clear()
 
     def test_group_list_page_list(self):
         """ Проверка контекста group_list"""
@@ -74,6 +77,7 @@ class PostViewsTest(TestCase):
         context = response.context
         group_list = context['group']
         self.assertEqual(group_list, self.group)
+        cache.clear()
 
     def test_profile_context(self):
         """Проверка контекста  profile """
@@ -82,8 +86,9 @@ class PostViewsTest(TestCase):
             kwargs={'username': self.user.username}
         ))
         context = response.context
-        posts_user = context['username']
+        posts_user = context['author']
         self.assertEqual(posts_user, self.user)
+        cache.clear()
 
     def test_post_detail_page_show_correct_context(self):
         """Проверка контекста post_detail """
@@ -94,6 +99,7 @@ class PostViewsTest(TestCase):
         context = response.context
         post = context['post']
         self.assertEqual(post, self.post)
+        cache.clear()
 
     def test_edit_uses_correct_form(self):
         """ Форма post_edit с ключом form, is_Edit"""
@@ -108,6 +114,7 @@ class PostViewsTest(TestCase):
             with self.subTest(key=field_name):
                 form_field = response.context['form'].fields[field_name]
                 self.assertIsInstance(form_field, type)
+                cache.clear()
 
     def test_edit_post_uses_is_edit(self):
         """Шаблон post_edit использует  key is_edit корректно"""
@@ -117,6 +124,7 @@ class PostViewsTest(TestCase):
         context = response.context
         is_edit = context['is_edit']
         self.assertIs(is_edit, True)
+        cache.clear()
 
     def test_post_create(self):
         """ шаблон post_create работает корректно"""
@@ -129,6 +137,7 @@ class PostViewsTest(TestCase):
             with self.subTest(field_name=field_name):
                 form_field = response.context['form'].fields[field_name]
                 self.assertIsInstance(form_field, field_type)
+                cache.clear()
 
     def test_post_not_in_right_places(self):
         """ пост корректно отображается
@@ -147,6 +156,7 @@ class PostViewsTest(TestCase):
         self.assertNotEqual(PostViewsTest, context_index)
         self.assertNotEqual(PostViewsTest, context_group)
         self.assertNotEqual(PostViewsTest, context_profile)
+        cache.clear()
 
     def test_post_in_places(self):
         """Тестовый пост"""
@@ -166,6 +176,7 @@ class PostViewsTest(TestCase):
         self.assertEqual(new_post, context_index)
         self.assertEqual(new_post, context_group)
         self.assertEqual(new_post, context_profile)
+        cache.clear()
 
 
 class PaginatorViewsTest(TestCase):
@@ -210,6 +221,7 @@ class PaginatorViewsTest(TestCase):
                 response = self.post_user.get(address)
                 context_page = response.context['page_obj']
                 self.assertEqual(len(context_page), 10)
+                cache.clear()
 
     def test_second_page_contains_three_records(self):
         """ Паджинатор проверяет вторую  страницу"""
@@ -222,3 +234,4 @@ class PaginatorViewsTest(TestCase):
             with self.subTest(address=address):
                 response = self.post_user.get((address) + '?page=2')
                 self.assertEqual(len(response.context['page_obj']), 10)
+                cache.clear()

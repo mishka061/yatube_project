@@ -1,24 +1,16 @@
-import shutil
-import tempfile
 from http import HTTPStatus
-
 from django.contrib.auth import get_user_model
-from django.conf import settings
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 from posts.models import Group, Post
 
 User = get_user_model()
 
-TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
-
-@override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostCreateForm(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Создаем запись в базе данных для проверки сушествующего slug
         cls.user = User.objects.create_user(username='author')
         cls.group = Group.objects.create(
             title='Тестовая группа',
@@ -37,11 +29,6 @@ class PostCreateForm(TestCase):
         self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def test_create_post(self):
         """Проверка создания новой записи"""
@@ -66,6 +53,9 @@ class PostCreateForm(TestCase):
                 group=PostCreateForm.group,
             ).exists()
         )
+        new_post = Post.objects.last()
+        self.assertEqual(new_post.author, self.user)
+        self.assertEqual(new_post.group, self.group)
 
     def test_post_edit(self):
         """Проверка страницы редактирования поста"""
@@ -86,4 +76,10 @@ class PostCreateForm(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertTrue(
             Post.objects.filter(text='Измененённое сообщение').exists()
+        )
+        old_group_response = self.authorized_client.get(
+            reverse('posts:group_list', args=(self.group.slug,))
+        )
+        self.assertEqual(
+            old_group_response.context['page_obj'].paginator.count, 1
         )

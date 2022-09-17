@@ -1,32 +1,47 @@
 {% extends 'base.html' %}
 {% block title%}
 Профайл  пользователя {{username}}
-{% endblock%}
-<head>
-</head>
-<body>
+{% endblock %}
+{% load thumbnail %}
 {% block content %}
+<body>
 <main>
+    {% load cache %}
+    {% cache 20 index_page page_odj.number %}
     <form action="{% if is_edit %} {% url 'posts:post_edit' post.id %} {% endif %}"
           method="post">
         {% csrf_token %}
-        <div class="container py-5">
-            <h1>Все посты пользователя {{ profile.author }} </h1>
-            <h3>Всего постов: {{ countPosts }} </h3>
+        <div class="mb-5">
+            {% if following is True %}
+            <a class="btn btn-lg btn-light"
+               href="{% url 'posts:profile_unfollow' author.username %}" role="button">
+                Отписаться
+            </a>
+            {% elif following is False %}
+            <a class="btn btn-lg btn-primary"
+               href="{% url 'posts:profile_follow' author.username %}" role="button">
+                Подписаться
+            </a>
+            {% endif %}
+            <h1>Все посты пользователя {{ post.author.username }} </h1>
             <article>
                 {% for post in page_obj %}
                 <ul>
+                    {% thumbnail post.image "360x339" crop="center" upscale=True as im %}
+                    <img class="card-img my-2" src="{{ im.url }}">
+                    {% endthumbnail %}
+                    <p>
+                        {{ post.text }}
+                    </p>
+
                     <li>
-                        Автор: {{ post.author.get_full_name }}<br>
-                        <!--<a href="">все посты пользователя</a>-->
+                        Автор: {{ post.author.get_full_name|default:post.author.username }}<br>
                     </li>
                     <li>
                         Дата публикации: {{ post.pub_date|date:"d E Y" }}
                     </li>
                 </ul>
-                <p>
-                    {{ post.text }}
-                </p>
+
                 {% if post.group %}
                 <a href="{% url 'posts:post_detail' post.id %}">Информация о посте</a>
                 {% endif %}
@@ -38,6 +53,7 @@
             <hr>
         </div>
     </form>
+    {% endcache %}
 </main>
-{% endblock %}
 </body>
+{% endblock %}
