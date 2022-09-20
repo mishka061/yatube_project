@@ -1,35 +1,80 @@
 {% extends 'base.html' %}
-
-{% load thumbnail %}
+{% load static %}
+{% block title%}
+Группа: {{ group.title }}
+{% endblock%}
 {% block content %}
-<h1> Название группы: {{ group.title }}</h1>
-<p> {{ group.description }}</p>
-{% for post in page_obj %}
-<ul>
-    <li>
-        Автор: {{ post.author.get_full_name|default:post.author.username }}
-    </li>
+{% load thumbnail %}
+<main>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col">
+                <img src="{% static 'img/_Q.jpg' %}" width="200" height="200" align="middle"/>
+            </div>
+            <div class="col-6">
+                <font color="MidnightBlue">
+                    <em>
+                        <h1><b> Все записи группы {{ group.description }}</b></h1>
+                    </em>
+                </font>
+            </div>
+            <div class="col">
+                <img src="{% static 'img/ulitca.jpg' %}" width="170" height="170" align="middle"/>
+            </div>
+        </div>
+    </div>
+    {% for post in page_obj %}
+    <div class="container py-5">
+        <div class="row">
+            <div class="col">
+                {% thumbnail post.image "500x500" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            </div>
+            <div class="col">
+                <h1>
+                    <font color="MidnightBlue">
+                        <em>Текст поста: </em>
+                    </font>
+                </h1>
+                <h2>{{ post.text }}</h2>
 
-    <li>
-        Дата публикации: {{ post.pub_date|date:"d E Y" }}
-    </li>
-</ul>
-{% thumbnail post.image "360x339" crop="center" upscale=True as im %}
-<img class="card-img my-2" src="{{ im.url }}">
-{% endthumbnail %}
-<p>
-    Текст поста: {{ post.text }}
-</p>
-{% if post.group %}
-<a href="{% url 'posts:post_detail' post.id %}">Информация о посте</a><br>
-<a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-
-{% endif %}
-{% if not forloop.last %}
-<hr>{% endif %}
-{% endfor %}
+            </div>
+        </div>
+        <br>
+        <ul>
+            <em>
+                <li>
+                    <a href="{% url 'posts:post_detail' post.id %}">
+                        Все посты пользователя {{ post.author.get_full_name|default:post.author.username }}
+                    </a>
+                </li>
+                {% if post.group %}
+                <li>
+                    <a href="{% url 'posts:group_list' post.group.slug %}">
+                        Все записи группы {{ post.group }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'posts:post_detail' post.id %}">Информация о посте</a>
+                </li>
+                <li>
+                    Дата публикации: {{ post.pub_date|date:"d E Y" }}
+                </li>
+                {% endif %}
+            </em>
+        </ul>
+    </div>
+    {% if not forloop.last %}
+    <hr>
+    {% endif %}
+    {% endfor %}
+</main>
 
 {% endblock %}
+
+
+
 
 
 

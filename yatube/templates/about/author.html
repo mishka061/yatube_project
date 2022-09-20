@@ -1,9 +1,25 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <main>
-    <h1>Привет, я автор</h1>
-    <p>
-        Меня зовут Алена,моя станица <a href="https://github.com/mishka061"> Github</a>
-    </p>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col">
+                <img src="{% static 'img/GQ.jpg' %}" width="200" height="200" align="middle"/>
+            </div>
+            <div class="col-6">
+                <h1>
+                    <font color="MidnightBlue">
+                        <em> Привет,меня зовут Алена. Добро пожаловать на мой сайт. Я начинающий программист,и это мой первый проект при поддержки Я.Практикум и моих сокурсников. Добавляйте свои посты,делитесь хорошим настроением!
+                        </em>
+
+                    </font>
+                </h1>
+            </div>
+            <div class="col">
+                <img src="{% static 'img/pchelka.jpg' %}" width="200" height="200" align="middle"/>
+            </div>
+        </div>
+    </div>
 </main>
 {% endblock %}

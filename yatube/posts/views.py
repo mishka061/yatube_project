@@ -27,7 +27,7 @@ def group_posts(request, slug):
     return render(request, template, context)
 
 
-@cache_page(60 * 20, key_prefix='index_page')
+
 def index(request):
     template = 'posts/index.html'
     post_list = Post.objects.all()
@@ -91,19 +91,20 @@ def post_create(request):
 @login_required
 def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
+    if request.user != post.author:
+        return redirect('posts:post_detail', post_id=post.id)
     form = PostForm(
         request.POST or None,
         files=request.FILES or None,
         instance=post
     )
-    context = {
-        'is_edit': True,
-        'form': form,
-        'post': post
-    }
     if form.is_valid():
         form.save()
         return redirect('posts:post_detail', post_id=post.id)
+    context = {
+        'is_edit': True,
+        'form': form,
+        'post': post}
     return render(request, 'posts/post_create.html', context)
 
 
@@ -134,7 +135,6 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    """Функция-обработчик, позволяющая подписаться на автора."""
     author = get_object_or_404(User, username=username)
     if author != request.user:
         Follow.objects.get_or_create(user=request.user, author=author)

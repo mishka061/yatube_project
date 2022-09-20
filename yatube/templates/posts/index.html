@@ -1,46 +1,74 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title%}
 Последние обновления на сайте
 {% endblock%}
-{% load thumbnail %}
 {% block content %}
-
-
-
-<body>
+{% load thumbnail %}
 <main>
-    {% load cache %}
-    {% cache 20 index_page page_odj.number %}
-    {% include 'includes/switcher.html' %}
     <div class="container py-5">
-        <h1>Посты сообщества Yatube</h1>
-        <article>
-            {% for post in page_obj %}
-            {% thumbnail post.image "360x339" crop="center" upscale=True as im %}
-            <img class="card-img my-2" src="{{ im.url }}">
-            {% endthumbnail %}
-            <p>Текст поста: {{ post.text }}</p>
-            <ul>
-                <li>
-                    Автор: {{ post.author.get_full_name|default:post.author.username }}
-                    <a href="{% url 'posts:post_detail' post.id %}">все посты пользователя</a>
-                </li>
-                <li>
-                    Дата публикации: {{ post.pub_date|date:"d E Y" }}
-                </li>
-            </ul>
-            {% if post.group %}
-            <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
-            {% endif %}
-            {% if not forloop.last %}
-            <hr>
-            {% endif %}
-            {% endfor %}
-        </article>
+        <div class="row">
+            <div class="col">
+                <img src="{% static 'img/colnce.jpg' %}" width="250" height="250" align="middle"/>
+            </div>
+            <div class="col-6">
+                <font color="MidnightBlue">
+                    <em>
+                        <h1><b>Сайт хорошего настроения</b></h1>
+                        <br>
+                        <h2>Чем чаще мы улыбаемся, тем счастливее становимся! Японская пословица гласит: "Сильнейший
+                            тот, кто улыбается." 最強は笑顔の人です
+                        </h2>
+                    </em>
+                </font>
+            </div>
+            <div class="col">
+                <img src="{% static 'img/babochka.jpg' %}" width="250" height="250" align="middle"/>
+            </div>
+        </div>
     </div>
-    {% endcache %}
+    {% include 'includes/switcher.html' %}
+    {% for post in page_obj %}
+    <div class="container py-5">
+        <div class="row">
+            <div class="col">
+                {% thumbnail post.image "500x600" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+            </div>
+            <div class="col">
+                <h1>
+                    <font color="MidnightBlue">
+                        <em>Текст поста: </em>
+                    </font>
+                </h1>
+                <h2>{{ post.text }}</h2>
+            </div>
+            <ul>
+                <em>
+                    <li>
+                        {% if post.group %}
+                        <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы {{ post.group }}
+                        </a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <a href="{% url 'posts:post_detail' post.id %}">все посты пользователя
+                            {{post.author.get_full_name|default:post.author.username }}
+                        </a>
+                    </li>
+                    <li>
+                        Дата публикации: {{ post.pub_date|date:"d E Y" }}
+                    </li>
+                </em>
+            </ul>
+        </div>
+    </div>
+    {% if not forloop.last %}
+    <hr>
+    {% endif %}
+    {% endfor %}
 </main>
-</body>
 {% endblock %}
 
 

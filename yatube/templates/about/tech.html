@@ -1,41 +1,39 @@
 <!-- templates/about/tech.html -->
 {% extends "base.html" %}
-
-
 {% block content %}
 <main>
-    {% comment %} Колонки с отступом сверху и снизу {% endcomment %}
     <div class="row">
-        <h1>Вот что я умею</h1>
-        {% comment %}
-        Боковой блок со списком технологий
-        Займет всю ширину блока на мобильном
-        и 25% при размерах экрана ≥768px
-        {% endcomment %}
+        <h1>
+            <font color="MidnightBlue">
+                <em>При создании сайта использовались технологии</em>
+            </font>
+        </h1>
         <aside class="col-12 col-md-3">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    Python
-                </li>
-                <li class="list-group-item">
-                    Django
-                </li>
-                <li class="list-group-item">
-                    HTML
-                </li>
-                <li class="list-group-item">
-                    SQL
-                </li>
-            </ul>
+            <h2>
+                <em>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Python
+                        </li>
+                        <li class="list-group-item">
+                            Django
+                        </li>
+                        <li class="list-group-item">
+                            HTML
+                        </li>
+                        <li class="list-group-item">
+                            SQL
+                        </li>
+                        <li class="list-group-item">
+                            CSS
+                        </li>
+                           <li class="list-group-item">
+                            Bootstrap
+                        </li>
+                    </ul>
+                </em>
+            </h2>
         </aside>
-        {% comment %}
-        Статья
-        Займет всю ширину блока на мобильном
-        и 75% при размерах экрана ≥768px
-        {% endcomment %}
-        <article class="col-12 col-md-9">
-            <p>Текст страницы "Технологии"</p>
-        </article>
     </div>
 </main>
 {% endblock %}

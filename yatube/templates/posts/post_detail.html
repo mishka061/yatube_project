@@ -4,51 +4,49 @@
 {% endblock%}
 {% load thumbnail %}
 {% block content %}
-
 <body>
 <main>
     <div class="container py-5">
         <div class="row">
-            <div class="row">
-                <aside class="col-12 col-md-3">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <p>
-                                Группа: {{ post.group }}
-                            </p>
-                            {% if post.group %}
+            <div class="col">
+                {% thumbnail post.image "500x500" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+                {% endthumbnail %}
+                {% if post.group %}
+                <ul>
+                    <em>
+                        <li>
                             <a href="{% url 'posts:group_list' post.group.slug %}">
-                                все записи группы
+                               Все записи группы {{ post.group }}
                             </a>
-                            {% endif %}
                         </li>
-                        <li class="list-group-item">
+                        {% endif %}
+                        <li>
                             <a href="{% url 'posts:profile' post.author.username %}">
-                                Все посты пользователя
+                                Все посты пользователя {{ post.author.get_full_name|default:post.author.username }}
                             </a>
                         </li>
-                        <article class="col-12 col-md-9">
-
+                        <li>
                             <a href="{% url 'posts:post_edit' post.id %}">Редактировать пост</a>
-                        </article>
-                        <li class="list-group-item">
-                            Автор: {{ post.author.get_full_name|default:post.author.username }}
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                        <li>
                             Всего постов: {{ post.author.posts.count }}
                         </li>
-                        <li class="list-group-item">
+                        <li>
                             Дата публикации: {{ post.pub_date|date:"d E Y" }}
                         </li>
-                        {% thumbnail post.image "360x339" crop="center" upscale=True as im %}
-                        <img class="card-img my-2" src="{{ im.url }}">
-                        {% endthumbnail %}
-                        <p>
-                            Текст поста: {{ post.text }}
-                        </p>
-                        {% include 'includes/commit.html' %}
-                    </ul>
-                </aside>
+                    </em>
+                </ul>
+            </div>
+            <div class="col">
+                <h1>
+                    <font color="MidnightBlue">
+                        <em>Текст поста: </em>
+                    </font>
+                </h1>
+                <h2>{{ post.text }}</h2>
+                {% include 'includes/commit.html' %}
             </div>
         </div>
     </div>
