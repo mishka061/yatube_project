@@ -30,7 +30,7 @@ class Post(models.Model):
     text = models.TextField(
         max_length=200,
         verbose_name='Текст поста',
-        help_text='Введите текст поста не больше 200 символов'
+        help_text='Введите текст поста'
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,

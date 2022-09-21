@@ -31,6 +31,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    'www.dendap98.pythonanywhere.com',
+    'dendap98.pythonanywhere.com',
 ]
 
 # Application definition
@@ -47,7 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sorl.thumbnail',
-    'debug_toolbar',
 
 ]
 
@@ -59,18 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
-INTERNAL_IPS = [
-    '127.0.0.1',
-]
-import mimetypes
-
-mimetypes.add_type("application/javascript", ".js", True)
-
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-}
 
 ROOT_URLCONF = 'yatube.urls'
 # Путь к директории с шаблонами вынесен в переменную:

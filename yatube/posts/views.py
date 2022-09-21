@@ -27,7 +27,7 @@ def group_posts(request, slug):
     return render(request, template, context)
 
 
-
+#@cache_page(60 * 20, key_prefix='index_page')
 def index(request):
     template = 'posts/index.html'
     post_list = Post.objects.all()
@@ -135,6 +135,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
+    """Функция-обработчик, позволяющая подписаться на автора."""
     author = get_object_or_404(User, username=username)
     if author != request.user:
         Follow.objects.get_or_create(user=request.user, author=author)

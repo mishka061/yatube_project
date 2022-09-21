@@ -26,13 +26,16 @@
                 <img src="{% static 'img/babochka.jpg' %}" width="250" height="250" align="middle"/>
             </div>
         </div>
+        {% include 'includes/switcher.html' %}
     </div>
-    {% include 'includes/switcher.html' %}
+    {% load cache %}
+    {% cache 20 index_page page_odj.number %}
+
     {% for post in page_obj %}
     <div class="container py-5">
         <div class="row">
             <div class="col">
-                {% thumbnail post.image "500x600" crop="center" as im %}
+                {% thumbnail post.image "500x500" crop="center" as im %}
                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
                 {% endthumbnail %}
             </div>
@@ -53,8 +56,8 @@
                         {% endif %}
                     </li>
                     <li>
-                        <a href="{% url 'posts:post_detail' post.id %}">все посты пользователя
-                            {{post.author.get_full_name|default:post.author.username }}
+                        <a href="{% url 'posts:profile' post.author.username %}">
+                            Все посты пользователя {{ post.author.get_full_name|default:post.author.username }}
                         </a>
                     </li>
                     <li>
@@ -68,9 +71,9 @@
     <hr>
     {% endif %}
     {% endfor %}
+    {% endcache %}
 </main>
 {% endblock %}
-
 
 
 

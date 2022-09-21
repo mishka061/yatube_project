@@ -2,7 +2,7 @@ from django.test import Client, TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from posts.models import Group, Post, Follow
+from posts.models import Post, Follow
 
 User = get_user_model()
 
@@ -29,10 +29,10 @@ class FollowersViewsTest(TestCase):
             text='Test_text',
             author=cls.user2,
         )
+
     def test_follower_can_follow(self):
-        """
-        Авторизованный пользователь может подписываться
-        на других пользоваталей.
+        """пользователь может подписываться
+        на других
         """
         self.follower.get(
             reverse('posts:profile_follow', kwargs={
@@ -57,7 +57,7 @@ class FollowersViewsTest(TestCase):
         self.assertIn(objects[0].text, self.post.text)
 
     def test_content_for_follower_and_unfollow(self):
-        """Тест: Подписанный пользователь видит посты и может отписаться."""
+        """Подписанный пользователь видит посты и может отписаться."""
         self.follower = Follow.objects.create(
             user=self.user, author=self.user2
         )
@@ -66,3 +66,17 @@ class FollowersViewsTest(TestCase):
         self.follower.delete()
         response1 = self.authorized_client.get(reverse('posts:follow_index'))
         self.assertNotEqual(response.content, response1.content)
+
+    def test_follow_no(self):
+        """нельзя подписаться на самого себя"""
+        self.follower.get(
+            reverse('posts:profile_follow', kwargs={
+                'username': self.user.username}
+            )
+        )
+        self.assertFalse(
+            Follow.objects.filter(
+                user=self.user,
+                author=self.user).exists()
+        )
+        self.assertNotEqual(Follow.objects.count(), 1)
